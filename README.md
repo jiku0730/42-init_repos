@@ -14,103 +14,6 @@ gh CLI と設定ファイルを使って、**自分の GitHub アカウント（
 42 の課題リポジトリをまとめて用意したいときに、「1 個ずつブラウザから作るのが面倒くさい」を解決するためのツールです。
 
 ---
-
-## 特長
-
-- **ユーザー / Organization 単位でまとめて作成**
-
-  `OWNER` で指定した GitHub ユーザー名 or Organization 名の配下に、`REPOS` の名前でリポジトリを作成します。
-  - 例:
-    - `OWNER="your-github-username"` → 自分のアカウント直下に作成
-    - `OWNER="42-your-org"` → Organization 配下に作成
-
-- **Description / Topics を自動設定**
-
-  `gh repo edit` を使って、
-  - `42 project: ${repo}` という Description
-  - `42`, `42tokyo`, `42-${safe_repo}` といった Topics
-  を自動で付与します。
-
-- **ローカル clone も自動管理**
-
-  `BASE_DIR/リポジトリ名` に clone します。すでに `.git` がある場合は、そのディレクトリを再利用します。
-
-- **初回 README コミットも自動**
-
-  コミットが 1 つもないリポジトリに対しては、`master` ブランチを作り、`README.md` を作成して初回コミットを push します。
-
----
-
-## 前提条件
-
-このスクリプトを利用するには、以下のツール・状態が必要です。
-
-- Unix 系環境（Linux / macOS / WSL など）
-- `bash`
-- `git`
-- [GitHub CLI (`gh`)](https://cli.github.com/)
-- GitHub アカウント
-  - `OWNER` に指定したユーザー / Organization へのリポジトリ作成権限
-  - 事前に `gh auth login` 済みであること
-
----
-
-## ファイル構成（例）
-
-```text
-.
-├── 42_init_repos.sh           # メインのスクリプト
-└── 42_repos_config.sh         # 設定ファイル（OWNER, BASE_DIR, REPOS を定義）
-````
-
-`42_init_repos.sh` と **同じディレクトリ** に `42_repos_config.sh` を置く前提になっています。
-
----
-
-## 設定ファイル：`42_repos_config.sh`
-
-このファイルで、対象の所有者（ユーザー or Organization）、ローカルの clone 先ディレクトリ、作成したいリポジトリ一覧を定義します。
-
-```bash
-# GitHub ユーザー名 or Organization 名
-OWNER="your-github-username"   # 例: "jikuhar" や "42-kjikuhar"
-
-# ローカルのベースディレクトリ
-BASE_DIR="$HOME/42-repos"
-
-# 作成・設定したいリポジトリ名一覧
-REPOS=(
-  "Libft"
-  "get_next_line"
-  "ft_printf"
-  "pipex"
-  "push_swap"
-  # "so_long"
-  # "FdF"
-  # ...
-)
-```
-
-* `OWNER`
-
-  * GitHub の「所有者名」を指定します。
-  * **自分のアカウントに作りたい場合**は、自分の GitHub ユーザー名を書けば OK です。
-
-    * 例: `"your-github-username"`
-  * リポジトリをまとめて管理したい場合や、個人アカウントにリポジトリが増えすぎるのが嫌な場合は、専用の Organization を作って、そちらの名前を指定するのがおすすめです。
-
-* `BASE_DIR`
-
-  * ローカルで clone する親ディレクトリです。
-  * 実際には `${BASE_DIR}/${repo}` というパスに clone されます。
-
-* `REPOS`
-
-  * 作成・設定したいリポジトリ名の配列です。
-  * ここに列挙した名前で `OWNER/リポジトリ名` が作成されます。
-
----
-
 ## 使い方
 
 1. このリポジトリを clone するか、`42_init_repos.sh` と `42_repos_config.sh` をローカルに配置する
@@ -233,7 +136,104 @@ REPOS=(
    gh --version
    ```
 
-うまくいけば、バージョン情報が表示されます。
+  うまくいけば、バージョン情報が表示されます。
+
+---
+
+## 特長
+
+- **ユーザー / Organization 単位でまとめて作成**
+
+  `OWNER` で指定した GitHub ユーザー名 or Organization 名の配下に、`REPOS` の名前でリポジトリを作成します。
+  - 例:
+    - `OWNER="your-github-username"` → 自分のアカウント直下に作成
+    - `OWNER="42-your-org"` → Organization 配下に作成
+
+- **Description / Topics を自動設定**
+
+  `gh repo edit` を使って、
+  - `42 project: ${repo}` という Description
+  - `42`, `42tokyo`, `42-${safe_repo}` といった Topics
+  を自動で付与します。
+
+- **ローカル clone も自動管理**
+
+  `BASE_DIR/リポジトリ名` に clone します。すでに `.git` がある場合は、そのディレクトリを再利用します。
+
+- **初回 README コミットも自動**
+
+  コミットが 1 つもないリポジトリに対しては、`master` ブランチを作り、`README.md` を作成して初回コミットを push します。
+
+---
+
+## 前提条件
+
+このスクリプトを利用するには、以下のツール・状態が必要です。
+
+- Unix 系環境（Linux / macOS / WSL など）
+- `bash`
+- `git`
+- [GitHub CLI (`gh`)](https://cli.github.com/)
+- GitHub アカウント
+  - `OWNER` に指定したユーザー / Organization へのリポジトリ作成権限
+  - 事前に `gh auth login` 済みであること
+
+---
+
+## ファイル構成（例）
+
+```text
+.
+├── 42_init_repos.sh           # メインのスクリプト
+└── 42_repos_config.sh         # 設定ファイル（OWNER, BASE_DIR, REPOS を定義）
+````
+
+`42_init_repos.sh` と **同じディレクトリ** に `42_repos_config.sh` を置く前提になっています。
+
+---
+
+## 設定ファイル：`42_repos_config.sh`
+
+このファイルで、対象の所有者（ユーザー or Organization）、ローカルの clone 先ディレクトリ、作成したいリポジトリ一覧を定義します。
+
+```bash
+# GitHub ユーザー名 or Organization 名
+OWNER="your-github-username"   # 例: "jikuhar" や "42-kjikuhar"
+
+# ローカルのベースディレクトリ
+BASE_DIR="$HOME/42-repos"
+
+# 作成・設定したいリポジトリ名一覧
+REPOS=(
+  "Libft"
+  "get_next_line"
+  "ft_printf"
+  "pipex"
+  "push_swap"
+  # "so_long"
+  # "FdF"
+  # ...
+)
+```
+
+* `OWNER`
+
+  * GitHub の「所有者名」を指定します。
+  * **自分のアカウントに作りたい場合**は、自分の GitHub ユーザー名を書けば OK です。
+
+    * 例: `"your-github-username"`
+  * リポジトリをまとめて管理したい場合や、個人アカウントにリポジトリが増えすぎるのが嫌な場合は、専用の Organization を作って、そちらの名前を指定するのがおすすめです。
+
+* `BASE_DIR`
+
+  * ローカルで clone する親ディレクトリです。
+  * 実際には `${BASE_DIR}/${repo}` というパスに clone されます。
+
+* `REPOS`
+
+  * 作成・設定したいリポジトリ名の配列です。
+  * ここに列挙した名前で `OWNER/リポジトリ名` が作成されます。
+
 ---
 
 ## スクリプトの動作の流れ
