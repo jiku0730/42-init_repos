@@ -18,21 +18,25 @@ gh CLI と設定ファイルを使って、**自分の GitHub アカウント（
 ## 特長
 
 - **ユーザー / Organization 単位でまとめて作成**
+
   `OWNER` で指定した GitHub ユーザー名 or Organization 名の配下に、`REPOS` の名前でリポジトリを作成します。
   - 例:
     - `OWNER="your-github-username"` → 自分のアカウント直下に作成
     - `OWNER="42-your-org"` → Organization 配下に作成
 
 - **Description / Topics を自動設定**
+
   `gh repo edit` を使って、
   - `42 project: ${repo}` という Description
   - `42`, `42tokyo`, `42-${safe_repo}` といった Topics
   を自動で付与します。
 
 - **ローカル clone も自動管理**
+
   `BASE_DIR/リポジトリ名` に clone します。すでに `.git` がある場合は、そのディレクトリを再利用します。
 
 - **初回 README コミットも自動**
+
   コミットが 1 つもないリポジトリに対しては、`master` ブランチを作り、`README.md` を作成して初回コミットを push します。
 
 ---
