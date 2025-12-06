@@ -122,6 +122,8 @@ REPOS=(
    ```bash
    gh auth status
    ```
+`gh: command not found` などと言われた場合は、GitHub CLI が入っていません。
+以下のいずれかの方法で、**管理者権限なし**でも利用できるようにできます。
 
 4. スクリプトに実行権限を付与する（必要なら）
 
@@ -135,6 +137,103 @@ REPOS=(
    ./42_init_repos.sh
    ```
 
+---
+
+### gh がインストールされていない場合
+
+> ここでは「とりあえずこのスクリプトを動かす」ための、
+> なるべくお手軽 & 権限いらずの入れ方だけを書いています。
+
+#### Ubuntu / WSL (Ubuntu) の場合
+
+1. GitHub CLI のバイナリをダウンロード:
+
+   ```bash
+   cd /tmp
+   curl -L -o gh.tar.gz https://github.com/cli/cli/releases/latest/download/gh_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64.tar.gz
+   tar xzf gh.tar.gz
+   ```
+
+2. 自分のホームディレクトリ配下にインストール（例：`$HOME/.local/bin`）:
+
+   ```bash
+   mkdir -p "$HOME/.local/bin"
+   # 展開されたディレクトリ名はバージョンによって変わるので ls で確認する
+   cd gh_*/bin
+   cp gh "$HOME/.local/bin/"
+   ```
+
+3. パスを通す（まだなら）:
+
+   ```bash
+   echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
+   source "$HOME/.bashrc"
+   ```
+
+4. 動作確認:
+
+   ```bash
+   gh --version
+   ```
+
+#### macOS の場合（Homebrew が使えない / 権限を増やしたくない場合）
+
+1. バイナリをダウンロード:
+
+   ```bash
+   cd /tmp
+   curl -L -o gh.tar.gz https://github.com/cli/cli/releases/latest/download/gh_darwin_amd64.tar.gz
+   tar xzf gh.tar.gz
+   ```
+
+2. ホームディレクトリ配下にコピー（例：`$HOME/.local/bin`）:
+
+   ```bash
+   mkdir -p "$HOME/.local/bin"
+   cd gh_*/bin
+   cp gh "$HOME/.local/bin/"
+   ```
+
+3. シェル設定に PATH を追加（`zsh` の例）:
+
+   ```bash
+   echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc"
+   source "$HOME/.zshrc"
+   ```
+
+4. 動作確認:
+
+   ```bash
+   gh --version
+   ```
+
+> すでに Homebrew を使っていて、権限も問題なければ
+> `brew install gh` のほうがシンプルです。
+
+#### Windows の場合（管理者権限なし）
+
+1. GitHub CLI の Windows 用 zip をブラウザからダウンロード
+
+   * ページ: [https://github.com/cli/cli/releases/latest](https://github.com/cli/cli/releases/latest)
+   * `gh_*_windows_amd64.zip` のようなファイルを選びます。
+
+2. 自分のユーザー領域（例：`C:\Users\あなたのユーザー名\Tools\gh`）に解凍
+
+3. 「ユーザー環境変数」の PATH に、そのフォルダを追加
+
+   * 「スタートメニュー」 → 「環境変数」と検索 →
+     「環境変数の編集（ユーザー）」を開く
+   * 「ユーザー環境変数」内の `Path` を選択 → 「編集」 → 「新規」
+   * 例: `C:\Users\あなたのユーザー名\Tools\gh\bin` を追加
+   * 管理者権限が不要な「ユーザー環境変数」側を変更するのがポイントです。
+
+4. 新しいターミナル（PowerShell / Git Bash など）を開き、動作確認:
+
+   ```powershell
+   gh --version
+   ```
+
+うまくいけば、バージョン情報が表示されます。
 ---
 
 ## スクリプトの動作の流れ
@@ -254,15 +353,17 @@ gh repo create "${full}" --private -y
 ## 運用のおすすめ
 
 * **まずはシンプルに：自分のアカウント直下に作成**
+
   `OWNER` に自分の GitHub ユーザー名を指定するだけで、すぐに使い始められます。
 
 * **リポジトリが増えてきたら：専用 Organization を作成**
+
   42 の課題用リポジトリが増えて、
 
   * 「自分のアカウント直下がごちゃごちゃしてきた…」
   * 「42 用だけ別の場所にまとめたい」
 
-  という場合は、`42-xxxx` のような専用 Organization を作成し、`OWNER` をその Organization 名に切り替える運用をおすすめします。
+  という場合は、`42-<intra>` のような専用 Organization を作成し、`OWNER` をその Organization 名に切り替える運用をおすすめします。
 
 ---
 
